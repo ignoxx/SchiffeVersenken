@@ -23,12 +23,13 @@ namespace SchiffeVersenken
             Ship Destroyer = new Ship(3);
             Ship Submarine = new Ship(2);
 
-            field.PlaceShipToField(Flagship, 1);
-            field.PlaceShipToField(Cruiser, 2);
-            field.PlaceShipToField(Destroyer, 3);
+//            field.PlaceShipToField(Flagship, 1);
+//            field.PlaceShipToField(Cruiser, 2);
+//            field.PlaceShipToField(Destroyer, 3);
             field.PlaceShipToField(Submarine, 4);
 
             field.PrintField();
+            
         }
     }
 }

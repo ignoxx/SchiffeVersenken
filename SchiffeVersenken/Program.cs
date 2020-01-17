@@ -18,18 +18,13 @@ namespace SchiffeVersenken
 
             GameField field = new GameField();
 
-            Ship Flagship = new Ship(5);
-            Ship Cruiser = new Ship(4);
-            Ship Destroyer = new Ship(3);
-            Ship Submarine = new Ship(2);
-
-//            field.PlaceShipToField(Flagship, 1);
-//            field.PlaceShipToField(Cruiser, 2);
-//            field.PlaceShipToField(Destroyer, 3);
-            field.PlaceShipToField(Submarine, 4);
+            field.PlaceShipToField(new Ship(5, Ship.ShipType.Flagship), 1);
+            field.PlaceShipToField(new Ship(4, Ship.ShipType.Cruiser), 2);
+            field.PlaceShipToField(new Ship(3, Ship.ShipType.Destroyer), 3);
+            field.PlaceShipToField(new Ship(2, Ship.ShipType.Submarine), 4);
+            
 
             field.PrintField();
-            
         }
     }
 }

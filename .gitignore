@@ -1,5 +1,3 @@
 bin/
 obj/
 /packages/.idea/.idea.SchiffeVersenken/
-.gitignore
-.idea

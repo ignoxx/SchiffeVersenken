@@ -1,21 +1,29 @@
+using System.Collections.Generic;
+
 namespace SchiffeVersenken
 {
     public class Ship
     {
-        public enum ShipType
+        public enum Type
         {
             Flagship,
             Cruiser,
             Destroyer,
             Submarine
         }
-        public int Size { get; }
-        public ShipType Type { get; }
-
-        public Ship(int size, ShipType type)
+        
+        public Dictionary<Type, int> sizes = new Dictionary<Type,int>()
         {
-            Size = size;
-            Type = type;
+            {Type.Flagship, 5},
+            {Type.Cruiser, 4},
+            {Type.Destroyer, 3},
+            {Type.Submarine, 2}
+        };
+        public int Size { get; }
+
+        public Ship(Type type)
+        {
+            Size = sizes[type];
         }
     }
 }

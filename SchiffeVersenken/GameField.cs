@@ -9,11 +9,7 @@ namespace SchiffeVersenken
         public enum FieldType
         {
             Water,
-            Locked,
-            Ship0,
-            Ship1,
-            Ship2,
-            Ship3,
+            Ship,
             Miss,
             Hit
         }
@@ -25,13 +21,17 @@ namespace SchiffeVersenken
         }
 
         public int Size { get; }
-
-        private FieldType[,] _field;
         
+        private FieldType[,] _field;
+
         public struct Position
         {
             public int x;
             public int y;
+            
+            // Adjust this as required
+            public override string ToString() =>
+                $"{x},{y}";
         }
 
         public GameField(int size = 10)
@@ -52,8 +52,9 @@ namespace SchiffeVersenken
             Direction direction;
             bool ship_placed = false;
 
-            for (int i = 0; i < amount; i++) 
+            for (int i = 0; i < amount; i++)
             {
+                ship_placed = false;
                 // Find a free position
                 do
                 {
@@ -86,8 +87,8 @@ namespace SchiffeVersenken
                             {
                                 if (PlaceFree(position))
                                 {
-                                    Console.WriteLine($"Placing {ship.Type} @ {position.x}|{position.y}");
-                                    _field[position.x, position.y] = GetShipFieldType(ship);
+                                    // Console.WriteLine($"Placing {ship.Type} @ {position.x}|{position.y}");
+                                    _field[position.x, position.y] = FieldType.Ship;
                                     count++;
                                 }
                                 else
@@ -101,7 +102,7 @@ namespace SchiffeVersenken
 
                             if (count == ship.Size)
                             {
-                                Console.WriteLine("--------");
+                                // Console.WriteLine("--------");
                                 ship_placed = true;
                             }
                                 
@@ -109,30 +110,6 @@ namespace SchiffeVersenken
                     }
                 } while (!ship_placed);
             }
-        }
-
-        public FieldType GetShipFieldType(Ship ship)
-        {
-            switch (ship.Type)
-            {
-                case Ship.ShipType.Flagship:
-                    return FieldType.Ship0;
-                    break;
-                
-                case Ship.ShipType.Cruiser:
-                    return FieldType.Ship1;
-                    break;
-                
-                case Ship.ShipType.Destroyer:
-                    return FieldType.Ship2;
-                    break;
-                
-                case Ship.ShipType.Submarine:
-                    return FieldType.Ship3;
-                    break;
-            }
-
-            return FieldType.Miss;
         }
 
         public bool PlaceFree(Position position)
@@ -160,9 +137,34 @@ namespace SchiffeVersenken
             return position;
         }
 
+        public bool HasShips()
+        {
+            for (int x = 0; x < _field.GetLength(0); x++)
+            {
+
+                for (int y = 0; y < _field.GetLength(1); y++)
+                {
+                    if (_field[x, y] == FieldType.Ship)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public FieldType GetFieldTypeAtPos(Position position)
+        {
+            return _field[position.x, position.y];
+        }
+
+        public void MarkFieldAs(Position pos, FieldType type)
+        {
+            _field[pos.x, pos.y] = type;
+        }
+        
         public void PrintField()
         {
-            Console.WriteLine("(0,0) -> " + "(" + Size + ", " + Size + ")");
+            Console.WriteLine($"(0,0) -> ({Size-1},{Size-1})");
 
             for (int x = 0; x < _field.GetLength(0); x++)
             {
@@ -174,25 +176,14 @@ namespace SchiffeVersenken
                             Console.ForegroundColor = ConsoleColor.Blue;
                             break;
                         
-                        case FieldType.Ship0: //to be removed
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            break;
-                        case FieldType.Ship1: //to be removed
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                            break;
-                        case FieldType.Ship2: //to be removed
-                            Console.ForegroundColor = ConsoleColor.Magenta;
-                            break;
-                        case FieldType.Ship3: //to be removed
-                            Console.ForegroundColor = ConsoleColor.White;
-                            break;
+                        // case FieldType.Ship: //to be removed
+                        //     Console.ForegroundColor = ConsoleColor.White;
+                        //     break;
                         
-                        case FieldType.Locked: //to be removed
-                            Console.ForegroundColor = ConsoleColor.Gray;
-                            break;
                         case FieldType.Miss:
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             break;
+                        
                         case FieldType.Hit:
                             Console.ForegroundColor = ConsoleColor.Red;
                             break;
@@ -202,6 +193,7 @@ namespace SchiffeVersenken
                 }
                 Console.Write("\n");
             }
+            Console.ResetColor();
         }
     }
 }

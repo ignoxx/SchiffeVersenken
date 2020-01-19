@@ -11,19 +11,17 @@ namespace SchiffeVersenken
             Destroyer,
             Submarine
         }
-        
-        public Dictionary<Type, int> sizes = new Dictionary<Type,int>()
+
+        private readonly Dictionary<Type, int> _sizes = new Dictionary<Type, int>
         {
-            {Type.Flagship, 5},
-            {Type.Cruiser, 4},
-            {Type.Destroyer, 3},
-            {Type.Submarine, 2}
+            {Type.Flagship, 5}, {Type.Cruiser, 4}, {Type.Destroyer, 3}, {Type.Submarine, 2}
         };
+
         public int Size { get; }
 
         public Ship(Type type)
         {
-            Size = sizes[type];
+            Size = _sizes[type];
         }
     }
 }

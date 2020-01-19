@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Numerics;
 
 namespace SchiffeVersenken
 {
@@ -14,24 +12,23 @@ namespace SchiffeVersenken
             Hit
         }
 
-        public enum Direction
+        private enum Direction
         {
             Horizontal,
             Vertical
         }
 
-        public int Size { get; }
-        
-        private FieldType[,] _field;
+        private int Size { get; }
+        private readonly FieldType[,] _field;
 
         public struct Position
         {
             public int x;
             public int y;
-            
-            // Adjust this as required
-            public override string ToString() =>
-                $"{x},{y}";
+            public override string ToString()
+            {
+                return $"{x},{y}";
+            }
         }
 
         public GameField(int size = 10)
@@ -47,25 +44,20 @@ namespace SchiffeVersenken
              * 2. Use this position to place the ship
              * 3. Repeat step 1 & 2 "amount" of times
              */
-
-            Position position;
-            Direction direction;
-            bool ship_placed = false;
-
-            for (int i = 0; i < amount; i++)
+            
+            for (var i = 0; i < amount; i++)
             {
-                ship_placed = false;
+                var shipPlaced = false;
                 // Find a free position
                 do
                 {
-                    position = RandomizePosition();
-                    direction = RandomizeDirection();
-
+                    var position = RandomizePosition();
+                    var direction = RandomizeDirection();
                     if (PlaceFree(position))
                     {
-                        int count = 0;
-                        Position starting_position = position;
-                        for (int j = 0; j < ship.Size; j++)
+                        var count = 0;
+                        var startingPosition = position;
+                        for (var j = 0; j < ship.Size; j++)
                         {
                             if (PlaceFree(position))
                                 count++;
@@ -82,73 +74,63 @@ namespace SchiffeVersenken
                         if (count == ship.Size)
                         {
                             count = 0;
-                            position = starting_position;
-                            for (int j = 0; j < ship.Size; j++)
+                            position = startingPosition;
+                            for (var j = 0; j < ship.Size; j++)
                             {
                                 if (PlaceFree(position))
                                 {
-                                    // Console.WriteLine($"Placing {ship.Type} @ {position.x}|{position.y}");
                                     _field[position.x, position.y] = FieldType.Ship;
                                     count++;
                                 }
-                                else
+                                else 
                                     break;
-                                
+
                                 if (direction == Direction.Horizontal)
                                     position.x++;
                                 else
                                     position.y++;
                             }
 
-                            if (count == ship.Size)
-                            {
-                                // Console.WriteLine("--------");
-                                ship_placed = true;
-                            }
-                                
+                            if (count == ship.Size) shipPlaced = true;
                         }
                     }
-                } while (!ship_placed);
+                } while (!shipPlaced);
             }
         }
 
-        public bool PlaceFree(Position position)
+        private bool PlaceFree(Position position)
         {
-            if (position.x < 0 || position.x > Size-1 || position.y < 0 || position.y > Size-1)
+            if (position.x < 0 || position.x > Size - 1 || position.y < 0 || position.y > Size - 1) 
                 return false;
             
             return _field[position.x, position.y] == FieldType.Water;
         }
 
-        public Direction RandomizeDirection()
+        private Direction RandomizeDirection()
         {
-            Random random = new Random();
+            var random = new Random();
             return (Direction) random.Next(0, 2);
         }
 
-        public Position RandomizePosition()
+        private Position RandomizePosition()
         {
-            Random zufall = new Random();
-            Position position = new Position();
+            var ran = new Random();
+            var position = new Position
+            {
+                x = ran.Next(0, Size - 1), 
+                y = ran.Next(0, Size - 1)
+            };
             
-            position.x = zufall.Next(0, Size-1);
-            position.y = zufall.Next(0, Size-1);
-
             return position;
         }
 
         public bool HasShips()
         {
-            for (int x = 0; x < _field.GetLength(0); x++)
-            {
-
-                for (int y = 0; y < _field.GetLength(1); y++)
-                {
-                    if (_field[x, y] == FieldType.Ship)
-                        return true;
-                }
-            }
-
+            for (var x = 0; x < _field.GetLength(0); x++)
+            for (var y = 0; y < _field.GetLength(1); y++)
+                if (_field[x, y] == FieldType.Ship)
+                    return true;
+            
             return false;
         }
 
@@ -161,38 +143,40 @@ namespace SchiffeVersenken
         {
             _field[pos.x, pos.y] = type;
         }
-        
+
         public void PrintField()
         {
-            Console.WriteLine($"(0,0) -> ({Size-1},{Size-1})");
-
-            for (int x = 0; x < _field.GetLength(0); x++)
+            Console.Clear();
+            Console.WriteLine($"(0,0) -> ({Size - 1},{Size - 1})");
+            for (var x = 0; x < _field.GetLength(0); x++)
             {
-                for (int y = 0; y < _field.GetLength(1); y++)
+                for (var y = 0; y < _field.GetLength(1); y++)
                 {
                     switch (_field[x, y])
                     {
                         case FieldType.Water:
                             Console.ForegroundColor = ConsoleColor.Blue;
                             break;
-                        
                         // case FieldType.Ship: //to be removed
                         //     Console.ForegroundColor = ConsoleColor.White;
                         //     break;
-                        
                         case FieldType.Miss:
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             break;
-                        
                         case FieldType.Hit:
                             Console.ForegroundColor = ConsoleColor.Red;
+                            break;
+                        default:
+                            Console.ForegroundColor = ConsoleColor.Blue;
                             break;
                     }
 
                     Console.Write('\u25A0' + " ");
                 }
+
                 Console.Write("\n");
             }
+
             Console.ResetColor();
         }
     }

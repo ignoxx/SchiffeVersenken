@@ -18,7 +18,7 @@ namespace SchiffeVersenken
             Vertical
         }
 
-        private int Size { get; }
+        public int Size { get; }
         private readonly FieldType[,] _field;
 
         public struct Position

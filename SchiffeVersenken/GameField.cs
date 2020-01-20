@@ -25,6 +25,7 @@ namespace SchiffeVersenken
         {
             public int x;
             public int y;
+
             public override string ToString()
             {
                 return $"{x},{y}";
@@ -44,7 +45,7 @@ namespace SchiffeVersenken
              * 2. Use this position to place the ship
              * 3. Repeat step 1 & 2 "amount" of times
              */
-            
+
             for (var i = 0; i < amount; i++)
             {
                 var shipPlaced = false;
@@ -63,7 +64,7 @@ namespace SchiffeVersenken
                                 count++;
                             else
                                 break;
-                            
+
                             if (direction == Direction.Horizontal)
                                 position.x++;
                             else
@@ -82,8 +83,9 @@ namespace SchiffeVersenken
                                     _field[position.x, position.y] = FieldType.Ship;
                                     count++;
                                 }
-                                else 
+                                else
                                     break;
+                                
 
                                 if (direction == Direction.Horizontal)
                                     position.x++;
@@ -102,7 +104,7 @@ namespace SchiffeVersenken
         {
             if (position.x < 0 || position.x > Size - 1 || position.y < 0 || position.y > Size - 1) 
                 return false;
-            
+
             return _field[position.x, position.y] == FieldType.Water;
         }
 
@@ -120,7 +122,7 @@ namespace SchiffeVersenken
                 x = ran.Next(0, Size - 1), 
                 y = ran.Next(0, Size - 1)
             };
-            
+
             return position;
         }
 
@@ -130,8 +132,19 @@ namespace SchiffeVersenken
             for (var y = 0; y < _field.GetLength(1); y++)
                 if (_field[x, y] == FieldType.Ship)
                     return true;
-            
+
             return false;
+        }
+
+        public int NumOfShips()
+        {
+            var count = 0;
+            for (var x = 0; x < _field.GetLength(0); x++)
+            for (var y = 0; y < _field.GetLength(1); y++)
+                if (_field[x, y] == FieldType.Ship)
+                    count++;
+
+            return count;
         }
 
         public FieldType GetFieldTypeAtPos(Position position)
@@ -147,9 +160,26 @@ namespace SchiffeVersenken
         public void PrintField()
         {
             Console.Clear();
-            Console.WriteLine($"(0,0) -> ({Size - 1},{Size - 1})");
+            Console.WriteLine("Try to hit all ships to win!");
+            Console.WriteLine("----------------");
+
+            // Print the x-coordinates
+            for (var i = -1; i < _field.GetLength(1); i++)
+                if (i == -1)
+                    Console.Write("  ");
+                else
+                    Console.Write(i + " ");
+
+            Console.Write("\n");
+            Console.ResetColor();
+
             for (var x = 0; x < _field.GetLength(0); x++)
             {
+                Console.ResetColor();
+
+                //Print the y-coordinates
+                Console.Write(x + " ");
+
                 for (var y = 0; y < _field.GetLength(1); y++)
                 {
                     switch (_field[x, y])
@@ -157,9 +187,6 @@ namespace SchiffeVersenken
                         case FieldType.Water:
                             Console.ForegroundColor = ConsoleColor.Blue;
                             break;
-                        // case FieldType.Ship: //to be removed
-                        //     Console.ForegroundColor = ConsoleColor.White;
-                        //     break;
                         case FieldType.Miss:
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             break;
@@ -178,6 +205,7 @@ namespace SchiffeVersenken
             }
 
             Console.ResetColor();
+            Console.WriteLine("----------------");
         }
     }
 }
